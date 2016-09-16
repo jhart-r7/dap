@@ -2,5 +2,5 @@
 .ruby-version
 .ruby-gemset
 
-# Ignore geoip data file
-data/geoip.dat
+# Ignore geoip data
+data/geoip/

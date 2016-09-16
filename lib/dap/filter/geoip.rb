@@ -4,11 +4,12 @@ module Dap
 module Filter
 
 module GeoIPLibrary
-  GEOIP_DIRS = [ 
-    File.expand_path( File.join( File.dirname(__FILE__), "..", "..", "..", "data")),
+  GEOIP_DATA_DIR = File.join(Dap::DATA_DIR, "geoip")
+  GEOIP_DIRS = [
+    GEOIP_DATA_DIR,
     "/var/lib/geoip"
   ]
-  GEOIP_CITY = %W{ geoip.dat geoip_city.dat GeoCity.dat IP_V4_CITY.dat GeoCityLite.dat }
+  GEOIP_CITY = %W{ geoip.dat geoip_city.dat GeoCity.dat IP_V4_CITY.dat GeoCityLite.dat GeoLiteCity.dat }
   GEOIP_ORGS = %W{ geoip_org.dat IP_V4_ORG.dat  }
 
   @@geo_city = nil
@@ -28,13 +29,13 @@ module GeoIPLibrary
         @@geo_orgs = GeoIP::Organization.new(path)
         break
       end
-    end  
-  end  
+    end
+  end
 end
 
 
 #
-# Add GeoIP tags using the MaxMind GeoIP::City 
+# Add GeoIP tags using the MaxMind GeoIP::City
 #
 class FilterGeoIP
   include BaseDecoder
@@ -48,7 +49,7 @@ class FilterGeoIP
       next unless k
       ret[k.to_s] = v.to_s
     end
-    
+
     ret
   end
 end

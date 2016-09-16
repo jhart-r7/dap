@@ -1,7 +1,9 @@
 module Dap
 
+  DATA_DIR = File.expand_path( File.join( File.dirname(__FILE__), "..", "data"))
+
   require 'bundler/setup'
-  
+
   require 'dap/version'
   require 'dap/input'
   require 'dap/output'
@@ -18,7 +20,7 @@ module Dap
       raise RuntimeError, "Invalid input plugin: #{name}" unless @@inputs[name]
       @@inputs[name].new(args)
     end
-    
+
     def self.create_output(args)
       name = args.shift
       raise RuntimeError, "Invalid output plugin: #{name}" unless @@outputs[name]
@@ -43,7 +45,7 @@ module Dap
       gsub(/_+/, '_').
       sub(/^_(input|filter|output)_/, '').downcase
     end
-    
+
     #
     # Load input formats
     #
@@ -62,8 +64,8 @@ module Dap
       Dap::Output.constants.each do |c|
         o = Dap::Output.const_get(c)
         next unless c.to_s =~ /^Output/
-        @@outputs[ name_from_class(c) ] = o        
-      end      
+        @@outputs[ name_from_class(c) ] = o
+      end
     end
 
     #
@@ -73,7 +75,7 @@ module Dap
       Dap::Filter.constants.each do |c|
         o = Dap::Filter.const_get(c)
         next unless c.to_s =~ /^Filter/
-        @@filters[ name_from_class(c) ] = o        
+        @@filters[ name_from_class(c) ] = o
       end
     end
 
@@ -87,7 +89,7 @@ module Dap
 
     def self.filters
       @@filters
-    end    
+    end
 
     def self.load_modules
       self.load_inputs

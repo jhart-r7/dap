@@ -6,6 +6,7 @@ require 'rubygems'
 require 'bundler/setup'
 require 'shellwords'
 require 'dap'
+require 'dap/utils/update'
 
 def version
   $stderr.puts "dap #{Dap::VERSION}"
@@ -18,6 +19,7 @@ def usage
   $stderr.puts "       --inputs"
   $stderr.puts "       --outputs"
   $stderr.puts "       --filters"
+  $stderr.puts "       --update"
   $stderr.puts ""
   $stderr.puts "Example: echo world | #{$0} lines stdin + rename line=hello + json stdout"
   $stderr.puts ""
@@ -37,7 +39,7 @@ def show_outputs
   $stderr.puts "Outputs:"
   Dap::Factory.outputs.each_pair do |k,v|
     $stderr.puts "  * #{k}"
-  end  
+  end
   $stderr.puts
   exit(1)
 end
@@ -46,7 +48,7 @@ def show_filters
   $stderr.puts "Filters:"
   Dap::Factory.filters.each_pair do |k,v|
     $stderr.puts "  * #{k}"
-  end  
+  end
   $stderr.puts
   exit(1)
 end
@@ -58,7 +60,7 @@ args  = []
 # Tokenize on + then treat each stage as a separate name + argument list
 #
 ARGV.join(' ').split(/\s*\+\s*/).each do |bit|
-  
+
   # Handle quoted arguments as needed
   # XXX: Doesn't work as expected since ARGV parsing gobbles them up
   aset = Shellwords.shellwords(bit)
@@ -77,18 +79,27 @@ ARGV.join(' ').split(/\s*\+\s*/).each do |bit|
 
   if arg == "--version" or arg == "-v"
     version
+    return
   end
 
   if arg == "--inputs"
     show_inputs
+    exit
   end
 
   if arg == "--outputs"
     show_outputs
+    exit
   end
 
   if arg == "--filters"
     show_filters
+    exit
+  end
+
+  if arg == "--update"
+    Dap::Utils.update
+    exit
   end
 
   args << aset if aset.length > 0
@@ -116,7 +127,7 @@ while true
   next if data == Dap::Input::Error::InvalidFormat
 
   docs = [ data ]
-  
+
   fcount = 1
   filters.each do |f|
     $stderr.puts "T:  #{" " * (fcount * 2)}#{f.name} -> #{docs.inspect} " if trace
@@ -135,4 +146,4 @@ while true
   end
 end
 
-out.stop 
+out.stop
