@@ -13,6 +13,10 @@ module Utils
         IO.copy_stream(gz, dat)
       end
     end
+
+    iana_uri = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt'
+    iana_txt = File.join(Dap::DATA_DIR, File.basename(iana_uri))
+    fetch(iana_uri, iana_txt)
   end
 
   private
